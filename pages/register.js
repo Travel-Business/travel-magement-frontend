@@ -31,14 +31,14 @@ const Register = () => {
             <section className="wrapper">
               {Object.entries(error).length !== 0 &&
                 error.constructor === Object &&
-                error.message.map((error) => {
+                error?.message.map((error) => {
                   return (
                     <div
-                      key={error.messages[0].id}
+                      key={error?.messages[0].id}
                       style={{ marginBottom: 10 }}
                     >
                       <small style={{ color: "red" }}>
-                        {error.messages[0].message}
+                        {error?.messages[0].message}
                       </small>
                     </div>
                   );
