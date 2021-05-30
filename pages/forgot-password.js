@@ -1,6 +1,8 @@
-/* pages/login.js */
+/* pages/forgot-password.js */
+import Router from "next/router";
 import React, { useState, useEffect, useContext } from "react";
-import { useRouter } from "next/router";
+import { forgotPassword } from "../lib/auth";
+// import { useRouter } from "next/router";
 import {
   Container,
   Row,
@@ -11,26 +13,30 @@ import {
   Label,
   Input,
 } from "reactstrap";
-import { login } from "../lib/auth";
-import AppContext from "../context/AppContext";
+// import { login } from "../lib/auth";
+// import AppContext from "../context/AppContext";
 
-function Login(props) {
-  const [data, updateData] = useState({ identifier: "", password: "" });
+export default function ForgotPassword() {
+  const [data, updateData] = useState({ email: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const router = useRouter();
-  const appContext = useContext(AppContext);
-
-  useEffect(() => {
-    if (appContext.isAuthenticated) {
-      router.push("/"); // redirect if you're already logged in
-    }
-  }, []);
+  const [success, setSuccess] = useState(false);
+  // const router = useRouter();
+  // const appContext = useContext(AppContext);
 
   function onChange(event) {
     updateData({ ...data, [event.target.name]: event.target.value });
   }
 
+  async function handleSubmit() {
+    forgotPassword(data.email, setError, setLoading, setSuccess);
+  }
+
+  function redirect() {
+    setTimeout(() => {
+      Router.push("/login");
+    }, 3000);
+  }
   return (
     <Container>
       <Row>
@@ -40,6 +46,14 @@ function Login(props) {
               <img src="https://strapi.io/assets/images/logo.png" />
             </div>
             <section className="wrapper">
+              {success && (
+                <div style={{ marginBottom: 10 }}>
+                  <small style={{ color: "green" }}>
+                    {"please check your email to reset your password"}
+                  </small>
+                </div>
+              )}
+              {success && redirect()}
               {Object.entries(error).length !== 0 &&
                 error.constructor === Object &&
                 error.message.map((error) => {
@@ -60,42 +74,17 @@ function Login(props) {
                     <Label>Email:</Label>
                     <Input
                       onChange={(event) => onChange(event)}
-                      name="identifier"
-                      style={{ height: 50, fontSize: "1.2em" }}
-                    />
-                  </FormGroup>
-                  <FormGroup style={{ marginBottom: 30 }}>
-                    <Label>Password:</Label>
-                    <Input
-                      onChange={(event) => onChange(event)}
-                      type="password"
-                      name="password"
+                      name="email"
+                      type="email"
                       style={{ height: 50, fontSize: "1.2em" }}
                     />
                   </FormGroup>
 
                   <FormGroup>
-                    <span>
-                      <a href="/forgot-password">
-                        <small>Forgot Password?</small>
-                      </a>
-                    </span>
                     <Button
                       style={{ float: "right", width: 120 }}
                       color="primary"
-                      onClick={() => {
-                        setLoading(true);
-                        login(data.identifier, data.password)
-                          .then((res) => {
-                            setLoading(false);
-                            // set authed User in global context to update header/app state
-                            appContext.setUser(res.data.user);
-                          })
-                          .catch((error) => {
-                            setError(error.response.data);
-                            setLoading(false);
-                          });
-                      }}
+                      onClick={handleSubmit}
                     >
                       {loading ? "Loading... " : "Submit"}
                     </Button>
@@ -140,5 +129,3 @@ function Login(props) {
     </Container>
   );
 }
-
-export default Login;
