@@ -63,11 +63,9 @@ export async function getStaticPaths() {
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/trips`);
   const trips = await response.json();
-  let paths;
-  if (trips.length > 0) {
-    console.log(trips, "test 67 getstatic");
-    paths = trips.map((trip) => ({ params: { id: trip.id } }));
-  }
+
+  const paths = trips.map((trip) => ({ params: { id: trip.id } }));
+
   return { paths, fallback: true };
 }
 
