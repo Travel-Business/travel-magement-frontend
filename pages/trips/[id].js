@@ -17,7 +17,7 @@ export default function ProposedTrip({ selectedTrip }) {
 
     return (
       <>
-        <Image height={300} width={500} src={photo[0].url} />
+        <Image priority={true} height={300} width={500} src={photo[0].url} />
         <Grid container>
           <Grid>
             <Typography>Trip Name: {title}</Typography>
@@ -63,8 +63,10 @@ export async function getStaticPaths() {
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/trips`);
   const trips = await response.json();
-  const paths = trips.map((trip) => ({ params: { id: trip.id } }));
-  return { paths, fallback: true };
+  if (trips) {
+    const paths = trips.map((trip) => ({ params: { id: trip.id } }));
+    return { paths, fallback: true };
+  }
 }
 
 export async function getStaticProps(ctx) {
