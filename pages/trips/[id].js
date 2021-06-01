@@ -1,5 +1,6 @@
 import { Button, Typography, Grid } from "@material-ui/core";
 import Cookies2 from "cookies";
+import FullScreenDialog from "../../components/DmcProposal/DmcProposal";
 import Image from "next/image";
 export default function ProposedTrip({ selectedTrip }) {
   if (selectedTrip && selectedTrip[0]) {
@@ -14,9 +15,22 @@ export default function ProposedTrip({ selectedTrip }) {
       photo,
       title,
     } = selectedTrip[0];
+    const [open, setOpen] = React.useState(false);
 
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+
+    const handleClose = () => {
+      setOpen(false);
+    };
     return (
       <>
+        <FullScreenDialog
+          handleOpen={handleClickOpen}
+          handleClose={handleClose}
+          open={open}
+        />
         <Image priority={true} height={300} width={500} src={photo[0].url} />
         <Grid container>
           <Grid>
@@ -26,8 +40,14 @@ export default function ProposedTrip({ selectedTrip }) {
             <Typography>Start From: {datefrom}</Typography>
             <Typography>Start To: {dateto}</Typography>
             <Typography>Trip Description: {description}</Typography>
-            <Button variant="contained" color="primary">
-              Submit
+            <Typography>Trip budget: ${budget}</Typography>
+
+            <Button
+              onClick={handleClickOpen}
+              variant="contained"
+              color="primary"
+            >
+              Propose Trip
             </Button>
           </Grid>
         </Grid>

@@ -39,7 +39,7 @@ const Layout = (props) => {
         <Nav className="navbar navbar-dark bg-dark">
           <NavItem>
             <Link href="/">
-              <a className="navbar-brand">Home</a>
+              <a className="navbar-brand">Apollo Travel Mangement</a>
             </Link>
           </NavItem>
 

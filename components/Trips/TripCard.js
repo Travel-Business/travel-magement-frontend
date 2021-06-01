@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useRouter } from "next/router";
+import AppContext from "../../context/AppContext";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -7,7 +9,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import Link from "next/link";
+
 const useStyles = makeStyles({
   root: {
     maxWidth: 345,
@@ -19,7 +21,11 @@ const useStyles = makeStyles({
 
 export default function MediaCard({ data }) {
   const classes = useStyles();
-  console.log("tripcard 22", data);
+  const { isAuthenticated } = useContext(AppContext);
+  const router = useRouter();
+  function handleRedirect() {
+    router.push(`/trips/${data.id}`);
+  }
   return (
     <Card className={classes.root}>
       <CardActionArea>
@@ -33,17 +39,22 @@ export default function MediaCard({ data }) {
             {data.title}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            {data.description}
+            {data.description.length > 35
+              ? data.description.slice(0, 100) + "..."
+              : data.description}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
-        {/* <Button size="small" color="primary">
+        <Button
+          variant="contained"
+          disabled={!isAuthenticated}
+          size="small"
+          color="primary"
+          onClick={handleRedirect}
+        >
           Propose Trip
-        </Button> */}
-        <Link as={`/trips/${data.id}`} href={`/trips?id=${data.id}`}>
-          Propose Trip
-        </Link>
+        </Button>
       </CardActions>
     </Card>
   );
