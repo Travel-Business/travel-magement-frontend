@@ -4,7 +4,32 @@ import Cookies2 from "cookies";
 import FullScreenDialog from "../../components/DmcProposal/DmcProposal";
 import Image from "next/image";
 import PrimarySearchAppBar from "../../components/NavbarWithoutSearch";
+import { makeStyles } from "@material-ui/core/styles";
+import Footer from "../../components/Footer/Footer";
+const useStyles = makeStyles({
+  root: {
+    maxWidth: 345,
+  },
+  container: {
+    // minHeight: "100vh",
+  },
+  tripProposalBannerContainer: {},
+  buttonContainer: {
+    padding: "3% 0% 0% 0%",
+    marginBottom: "20%",
+    display: "flex",
+    justifyContent: "center",
+  },
+  tripDetailsContainer: {
+    padding: "3%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+});
+
 export default function ProposedTrip({ selectedTrip }) {
+  const classes = useStyles();
   if (selectedTrip && selectedTrip[0]) {
     const {
       budget,
@@ -26,64 +51,57 @@ export default function ProposedTrip({ selectedTrip }) {
     const handleClose = () => {
       setOpen(false);
     };
+
     return (
-      <>
+      <div className={classes.container}>
         <PrimarySearchAppBar />
         <FullScreenDialog
           handleOpen={handleClickOpen}
           handleClose={handleClose}
           open={open}
         />
-        <Image priority={true} height={300} width={500} src={photo[0].url} />
-        <Grid container>
-          <Grid>
-            <Typography>Trip Name: {title}</Typography>
-            <Typography>Country: {country}</Typography>
-            <Typography>City: {city}</Typography>
-            <Typography>Start From: {datefrom}</Typography>
-            <Typography>Start To: {dateto}</Typography>
-            <Typography>Trip Description: {description}</Typography>
-            <Typography>Trip budget: ${budget}</Typography>
+        <div className={classes.tripProposalBannerContainer}>
+          <Image
+            className={classes.heroImage}
+            priority={true}
+            height={500}
+            width={1800}
+            src={"https://source.unsplash.com/random"}
+          />
+        </div>
 
-            <Button
-              onClick={handleClickOpen}
-              variant="contained"
-              color="primary"
-            >
-              Propose Trip
-            </Button>
+        <Grid className={classes.tripDetailsContainer} container>
+          <Grid item md={12}>
+            <Typography variant="h4" align="center">
+              Trip Name: {title}
+            </Typography>
+            <Typography align="center">Country: {country}</Typography>
+            <Typography align="center">City: {city}</Typography>
+            <Typography align="center">Start From: {datefrom}</Typography>
+            <Typography align="center">Start To: {dateto}</Typography>
+            <Typography align="center">
+              Trip Description: {description}
+            </Typography>
+            <Typography align="center">Trip budget: ${budget}</Typography>
+            <div className={classes.buttonContainer}>
+              <Button
+                onClick={handleClickOpen}
+                variant="contained"
+                color="primary"
+              >
+                Propose This Trip
+              </Button>
+            </div>
           </Grid>
         </Grid>
-      </>
+        <Footer />
+      </div>
     );
   }
-  return <></>;
+  return <>No Trip Available</>;
 }
 
 export async function getStaticPaths() {
-  //   const paths = [
-  //     {
-  //       params: {
-  //         id: "italy",
-  //       },
-  //     },
-  //     {
-  //       params: {
-  //         id: "rome",
-  //       },
-  //     },
-  //     {
-  //       params: {
-  //         id: "france",
-  //       },
-  //     },
-  //     {
-  //       params: {
-  //         id: "japan",
-  //       },
-  //     },
-  //   ];
-
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/trips`);
   const trips = await response.json();
 
@@ -94,23 +112,9 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(ctx) {
   const { params } = ctx;
-  console.log(params);
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/trips`);
   const trips = await response.json();
   const selectedTrip = trips.filter((trip) => trip.id === params.id);
-  //   const cookies = new Cookies2(ctx.req, ctx.res);
-  //   const userToken = cookies.get("token");
-  //   console.log("test token", userToken);
-  //   const response = await fetch(
-  //     `${process.env.NEXT_PUBLIC_API_URL}/dmc-proposals`,
-  //     {
-  //       method: "GET",
-
-  //       headers: userToken && { Authorization: `Bearer ${userToken}` },
-  //     }
-  //   );
-  //   const data = await response.json();
-  //   console.log("test data 76", data);
   return {
     props: { selectedTrip },
   };

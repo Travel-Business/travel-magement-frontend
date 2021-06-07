@@ -1,10 +1,8 @@
-import axios from "axios";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
-import Container from "@material-ui/core/Container";
 import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -26,13 +24,8 @@ function Copyright() {
 }
 const useStyles = makeStyles((theme) => ({
   paper: {
-    // width: "100%",
     minHeight: "50vh",
     padding: "15% 0% 0% 0%",
-
-    // display: "flex",
-    // flexDirection: "column",
-    // alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
@@ -76,9 +69,6 @@ export default function ResetPassword() {
         code,
         cb: setSubmitted,
       });
-    // () => {
-    //   setTimeout(() => setSubmitted(true), 5000);
-    // };
   };
 
   return (

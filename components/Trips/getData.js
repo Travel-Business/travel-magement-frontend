@@ -3,7 +3,6 @@ async function getData(userToken) {
     method: "GET",
     headers: userToken && { Authorization: `Bearer ${userToken}` },
   });
-  console.log("response dmc home", response.body);
   return response;
 }
 

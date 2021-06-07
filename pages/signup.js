@@ -61,7 +61,6 @@ export default function SignUp() {
   const router = useRouter();
   const handleSubmit = () => {
     setLoading(true);
-    console.log(data);
     registerUser({
       username: data.username,
       email: data.email,
@@ -69,7 +68,6 @@ export default function SignUp() {
       router,
     })
       .then((res) => {
-        console.log({ res });
         // set authed user in global context object
         appContext.setUser(res.data.user);
         setLoading(false);
@@ -83,7 +81,6 @@ export default function SignUp() {
   const handleOnChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
-  console.log("signup", data);
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -107,19 +104,6 @@ export default function SignUp() {
           })}
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                onChange={handleOnChange}
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-              />
-            </Grid> */}
             <Grid item xs={12}>
               <TextField
                 variant="outlined"

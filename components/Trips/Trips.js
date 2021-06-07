@@ -3,7 +3,7 @@ import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   tripCardContainer: {
-    padding: "1%",
+    padding: "6% 1% 2% 4%",
   },
 }));
 
@@ -16,8 +16,14 @@ export default function Trips(props) {
     });
     const trips = searchQueryResult.map((trip, index) => {
       return (
-        <Grid item className={classes.tripCardContainer} md={3}>
-          <TripCard key={index} data={trip} />
+        <Grid
+          key={index}
+          item
+          className={classes.tripCardContainer}
+          xs={12}
+          md={3}
+        >
+          <TripCard data={trip} />
         </Grid>
       );
     });

@@ -11,7 +11,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles, Theme as theme } from "@material-ui/core/styles";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import { login } from "../lib/auth";
 import AppContext from "../context/AppContext";
@@ -83,7 +83,6 @@ export default function SignInSide() {
     login(data.email, data.password)
       .then((res) => {
         setLoading(false);
-        console.log("test res 134", res);
         // set authed User in global context to update header/app state
         appContext.setUser(res.data.user);
         router.push("/");
@@ -93,7 +92,6 @@ export default function SignInSide() {
         setLoading(false);
       });
   }
-  console.log({ data });
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
