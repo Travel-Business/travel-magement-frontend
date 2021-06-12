@@ -345,15 +345,6 @@ export function CheckboxesGroupGenerator({
   objectBoolean,
   classes,
 }) {
-  // console.log(itemTitle, objectBoolean, objectContent, 'test 38');
-  // const classes = useStyles();
-  // const [state, setState] = React.useState(objectBoolean);
-
-  // const handleChange = (event) => {
-  //     console.log(event.target.name, event.target.checked, 'test check 49');
-  //     setState({ ...state, [event.target.name]: event.target.checked });
-  // };
-
   return (
     <div className={classes.checkboxGroup}>
       <FormControl component="fieldset" className={classes.formControl}>
