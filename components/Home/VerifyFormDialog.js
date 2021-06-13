@@ -16,6 +16,9 @@ import Slide from "@material-ui/core/Slide";
 import TextField from "@material-ui/core/TextField";
 import ChipKeywordTemplate from "./ChipKeywordTemplate";
 import {
+  EXISTING_TRIPS_INIT,
+  EXISTING_TRIPS,
+  EXISTING_TRIPS_URLS,
   ListItemGenerator,
   BASIC_QUESTIONS,
   COUNTRIES,
@@ -29,6 +32,8 @@ import {
   STUDY_FIELDS,
   TOPIC_SPECIALTY,
   TOPIC_SPECIALTY_INIT,
+  DMC_TODO_INIT,
+  DMC_TODO,
 } from "./common";
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -77,14 +82,23 @@ export default function VerifyFormDialog({ open, handleClose }) {
   const classes = useStyles();
   const [fieldsStudy, setFieldsStudy] = useState(STUDY_FIELDS_INIT);
   const [topSpecialty, setTopSpecialty] = useState(TOPIC_SPECIALTY_INIT);
+  const [existingTrips, setExistingTrips] = useState(EXISTING_TRIPS_INIT);
   const [data, updateData] = useState({});
   const [keywordTags, setKeywordTags] = useState("");
+  const [dmcTodo, setDmcTodo] = useState(DMC_TODO_INIT);
   const [proposedTripsLocations, setProposedTripsLocations] = useState(
     COUNTRIES_CHECKBOX_INIT
   );
   const [specializedArea, setSpecializedArea] = useState(
     SPECIALIZED_AREAS_INIT
   );
+
+  function onChangeDmcTo(event) {
+    setDmcTodo({
+      ...dmcTodo,
+      [event.target.name]: event.target.checked,
+    });
+  }
 
   function handleUpdateKeywords(data) {
     updateData({ ...data, keywordTags: data });
@@ -107,6 +121,12 @@ export default function VerifyFormDialog({ open, handleClose }) {
   function onChangeFieldsStudy(event) {
     setFieldsStudy({
       ...fieldsStudy,
+      [event.target.name]: event.target.checked,
+    });
+  }
+  function onChangeExistingTrips(event) {
+    setExistingTrips({
+      ...existingTrips,
       [event.target.name]: event.target.checked,
     });
   }
@@ -287,6 +307,29 @@ export default function VerifyFormDialog({ open, handleClose }) {
             classes={classes}
             callback={onChangeTopSpecialty}
             state={topSpecialty}
+          />
+
+          <CheckboxesGroupGenerator
+            objectBoolean={EXISTING_TRIPS_INIT}
+            objectContent={EXISTING_TRIPS}
+            urls={EXISTING_TRIPS_URLS}
+            withLinks={true}
+            numberOfColumns={5}
+            itemTitle={
+              "Would You like to sign up to run one of these existing trips?"
+            }
+            classes={classes}
+            callback={onChangeExistingTrips}
+            state={existingTrips}
+          />
+          <CheckboxesGroupGenerator
+            objectBoolean={DMC_TODO_INIT}
+            objectContent={DMC_TODO}
+            numberOfColumns={3}
+            itemTitle={"Which would you like to do? Check all that apply"}
+            classes={classes}
+            callback={onChangeDmcTo}
+            state={dmcTodo}
           />
         </div>
       </Dialog>

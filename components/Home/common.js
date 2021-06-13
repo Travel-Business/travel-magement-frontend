@@ -48,6 +48,57 @@ export const BASIC_QUESTIONS = [
   { type: "string", label: "Role:", name: "role", placeholder: "e.g manager" },
 ];
 
+export const DMC_TODO = {
+  proposeNewTrip: "Propose a new trip",
+  bidExistingTrips: "collaborate and bid on an existing trip",
+  receiveInfo: "receive information ",
+};
+
+export const DMC_TODO_INIT = {
+  proposeNewTrip: false,
+  bidExistingTrips: false,
+  receiveInfo: false,
+};
+
+export const EXISTING_TRIPS_URLS = {
+  arlesFrance: "www.artistimmersionprogram.com/france ",
+  sevilleCarmonaSpain: "www.artistimmersionprogram.com/spain ",
+  sienaItaly: "www.artistimmersionprogram.com/italy",
+  kyotoJapan: "www.artistimmersionprogram.com/japan",
+  jaipurIndia: "www.artistimmersionprogram.com/india",
+  marrakechMorocco: "www.artistimmersionprogram.com/marrakesh",
+  oaxacaMexico: "www.artistimmersionprogram.com/oaxaca",
+  mexicoCityMexico: "www.artistimmersionprogram.com/mexicocity",
+  parisFrance: "www.artistimmersionprogram.com/paris",
+  amsterdamHolland: "www.artistimmersionprogram.com/amsterdam",
+};
+
+export const EXISTING_TRIPS_INIT = {
+  arlesFrance: false,
+  sevilleCarmonaSpain: false,
+  sienaItaly: false,
+  kyotoJapan: false,
+  jaipurIndia: false,
+  marrakechMorocco: false,
+  oaxacaMexico: false,
+  mexicoCityMexico: false,
+  parisFrance: false,
+  amsterdamHolland: false,
+};
+
+export const EXISTING_TRIPS = {
+  arlesFrance: "Arles, France",
+  sevilleCarmonaSpain: "Seville / Carmona, Spain",
+  sienaItaly: "Siena, Italy",
+  kyotoJapan: "Kyoto, Japan",
+  jaipurIndia: "Jaipur, India",
+  marrakechMorocco: "Marrakech, Morocco",
+  oaxacaMexico: "Oaxaca, Mexico",
+  mexicoCityMexico: "Mexico City, Mexico",
+  parisFrance: "Paris, France",
+  amsterdamHolland: "Amsterdam, Holland",
+};
+
 export const SPECIALIZED_AREAS_INIT = {
   arts: false,
   luxuryTours: false,
@@ -245,8 +296,6 @@ export function ListItemGenerator({ onChange, classes, items }) {
     return (
       <Grid key={index} item md={3} xs={3}>
         <ListItem>
-          {/* <ListItemText primary="Trip Queston One" /> */}
-
           <TextField
             id={item.name}
             label={item.label}
@@ -307,16 +356,14 @@ export function DropDownGenerator({
   );
 }
 
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//       display: 'flex',
-//   },
-//   formControl: {
-//       margin: theme.spacing(3),
-//   },
-// }));
-
-const CheckBoxs = (state, ObjectContents, callback, numberOfColumns) => {
+const CheckBoxs = (
+  state,
+  ObjectContents,
+  callback,
+  numberOfColumns,
+  withLinks = false,
+  urls = {}
+) => {
   const checkboxGroup = Object.keys(state).map((item, index) => (
     <Grid key={index} item xs={numberOfColumns}>
       <FormControlLabel
@@ -325,6 +372,7 @@ const CheckBoxs = (state, ObjectContents, callback, numberOfColumns) => {
         }
         label={ObjectContents[item]}
       />
+      {withLinks ? <a href={urls[item]}>{urls[item]}</a> : ""}
     </Grid>
   ));
   return (
@@ -344,12 +392,21 @@ export function CheckboxesGroupGenerator({
   objectContent,
   objectBoolean,
   classes,
+  withLinks = false,
+  urls,
 }) {
   return (
     <div className={classes.checkboxGroup}>
       <FormControl component="fieldset" className={classes.formControl}>
         <FormLabel component="legend">{itemTitle}</FormLabel>
-        {CheckBoxs(state, objectContent, callback, numberOfColumns)}
+        {CheckBoxs(
+          state,
+          objectContent,
+          callback,
+          numberOfColumns,
+          withLinks,
+          urls
+        )}
       </FormControl>
     </div>
   );
