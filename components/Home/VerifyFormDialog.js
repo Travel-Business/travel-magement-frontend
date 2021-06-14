@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import Cookie from "js-cookie";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -15,6 +16,9 @@ import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import TextField from "@material-ui/core/TextField";
 import ChipKeywordTemplate from "./ChipKeywordTemplate";
+import dmcProfileService from "../../services/dmcProfileService";
+import AppContext from "../../context/AppContext";
+import RangeSlider from "./CustomSlider";
 import {
   EXISTING_TRIPS_INIT,
   EXISTING_TRIPS,
@@ -84,8 +88,12 @@ export default function VerifyFormDialog({ open, handleClose }) {
   const [topSpecialty, setTopSpecialty] = useState(TOPIC_SPECIALTY_INIT);
   const [existingTrips, setExistingTrips] = useState(EXISTING_TRIPS_INIT);
   const [data, updateData] = useState({});
+  const token = Cookie.get("token");
+  const { user, setUser, isAuthenticated } = useContext(AppContext);
   const [keywordTags, setKeywordTags] = useState("");
   const [dmcTodo, setDmcTodo] = useState(DMC_TODO_INIT);
+  const [hotelPrice, setHotelPrice] = useState([400, 700]);
+  const [quoteRate, setQuoteRate] = useState([2000, 5000]);
   const [proposedTripsLocations, setProposedTripsLocations] = useState(
     COUNTRIES_CHECKBOX_INIT
   );
@@ -93,15 +101,25 @@ export default function VerifyFormDialog({ open, handleClose }) {
     SPECIALIZED_AREAS_INIT
   );
 
+  const handleQuoteRateChange = (event, newValue) => {
+    setQuoteRate(newValue);
+    updateData({ ...data, quoteRatePriceRange: quoteRate });
+  };
+  const handleHotelPriceChange = (event, newValue) => {
+    setHotelPrice(newValue);
+    updateData({ ...data, hotelPriceRange: hotelPrice });
+  };
+
   function onChangeDmcTo(event) {
     setDmcTodo({
       ...dmcTodo,
       [event.target.name]: event.target.checked,
     });
+    updateData({ ...data, dmcTodo });
   }
 
-  function handleUpdateKeywords(data) {
-    updateData({ ...data, keywordTags: data });
+  function handleUpdateKeywords(keywordData) {
+    updateData({ ...data, keywordTags: keywordData });
   }
   function onChange(event) {
     updateData({ ...data, [event.target.name]: event.target.value });
@@ -111,32 +129,51 @@ export default function VerifyFormDialog({ open, handleClose }) {
       ...proposedTripsLocations,
       [event.target.name]: event.target.checked,
     });
+    updateData({ ...data, proposedTripsLocations });
   }
   function onChangeSpecializedArea(event) {
     setSpecializedArea({
       ...specializedArea,
       [event.target.name]: event.target.checked,
     });
+    updateData({ ...data, specializedArea });
   }
   function onChangeFieldsStudy(event) {
     setFieldsStudy({
       ...fieldsStudy,
       [event.target.name]: event.target.checked,
     });
+    updateData({ ...data, fieldsStudy });
   }
   function onChangeExistingTrips(event) {
     setExistingTrips({
       ...existingTrips,
       [event.target.name]: event.target.checked,
     });
+    updateData({ ...data, existingTrips });
   }
   function onChangeTopSpecialty(event) {
     setTopSpecialty({
       ...topSpecialty,
       [event.target.name]: event.target.checked,
     });
+    updateData({ ...data, topSpecialty });
   }
-  console.log({ data });
+  function handleSave() {
+    const { dmc_profile } = user;
+    const body = JSON.stringify({
+      data,
+    });
+    if (dmc_profile)
+      dmcProfileService.updateDmcProfile({ token, body, dmc_profile });
+    const responseData = dmcProfileService.getDmcProfile({
+      dmc_profile,
+      token,
+    });
+
+    handleClose();
+  }
+
   return (
     <div>
       <Dialog
@@ -158,7 +195,7 @@ export default function VerifyFormDialog({ open, handleClose }) {
             <Typography variant="h6" className={classes.title}>
               DMC Partners Verification Form
             </Typography>
-            <Button autoFocus color="inherit" onClick={handleClose}>
+            <Button autoFocus color="inherit" onClick={handleSave}>
               save
             </Button>
           </Toolbar>
@@ -332,6 +369,31 @@ export default function VerifyFormDialog({ open, handleClose }) {
             state={dmcTodo}
           />
         </div>
+        <Typography>
+          If you are hotel, what is your Max and Min price. (Please use the
+          slide to indicate){" "}
+        </Typography>
+        <RangeSlider
+          min={300}
+          max={2000}
+          step={50}
+          handleChange={handleHotelPriceChange}
+          value={hotelPrice}
+          setValue={setHotelPrice}
+        />
+        <Typography>
+          Please provide the range of rate quotes which you would be willing to
+          operate a trip for. This is not binding, just an ideal cost from your
+          side.
+        </Typography>
+        <RangeSlider
+          min={1000}
+          max={10000}
+          step={500}
+          handleChange={handleQuoteRateChange}
+          value={quoteRate}
+          setValue={setQuoteRate}
+        />
       </Dialog>
     </div>
   );
