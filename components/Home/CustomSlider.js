@@ -30,12 +30,6 @@ function ValueLabelComponent(props) {
 
 export default function RangeSlider({ min, max, step, value, handleChange }) {
   const classes = useStyles();
-  //   const [value, setValue] = React.useState([400, 700]);
-
-  //   const handleChange = (event, newValue) => {
-  //     setValue(newValue);
-  //   };
-
   return (
     <div className={classes.root}>
       <Box mt={3}></Box>
