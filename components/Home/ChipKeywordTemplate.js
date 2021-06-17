@@ -24,13 +24,10 @@ export default function ChipsArray({ keywordString, callBack }) {
   useEffect(() => {
     if (keywordString) {
       const keywordsArray = keywordString.split(":");
-      console.log(keywordsArray, "test keywords array");
       const keywordsObjectArray = keywordsArray.map((item, index) => {
         return { key: index, label: item };
       });
-      console.log({ keywordsObjectArray });
       setChipData(keywordsObjectArray);
-      console.log({ chipData });
       callBack(chipData);
     }
   }, [keywordString]);
