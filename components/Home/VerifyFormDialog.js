@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Cookie from "js-cookie";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 export default function VerifyFormDialog({ open, handleClose }) {
   const classes = useStyles();
   const [fieldsStudy, setFieldsStudy] = useState(STUDY_FIELDS_INIT);
@@ -89,7 +89,10 @@ export default function VerifyFormDialog({ open, handleClose }) {
   const [existingTrips, setExistingTrips] = useState(EXISTING_TRIPS_INIT);
   const [data, updateData] = useState({});
   const token = Cookie.get("token");
+
   const { user, setUser, isAuthenticated } = useContext(AppContext);
+
+  const [updatedUser, setUpdatedUser] = useState({});
   const [keywordTags, setKeywordTags] = useState("");
   const [dmcTodo, setDmcTodo] = useState(DMC_TODO_INIT);
   const [hotelPrice, setHotelPrice] = useState([400, 700]);
@@ -159,21 +162,56 @@ export default function VerifyFormDialog({ open, handleClose }) {
     });
     updateData({ ...data, topSpecialty });
   }
+
+  useEffect(() => {
+    async function updateUser(token) {
+      // authenticate the token on the server and place set user object
+      fetch(`${NEXT_PUBLIC_API_URL}/users/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(async (res) => {
+        // if res comes back not valid, token is not valid
+        // delete the token and log the user out on client
+        if (!res.ok) {
+          Cookie.remove("token");
+          return null;
+        }
+        const updated = await res.json();
+        setUpdatedUser(updated);
+        setUser(user);
+        console.log("inside", { updatedUser });
+      });
+    }
+    updateUser(token);
+  }, [user]);
+
   function handleSave() {
-    const { dmc_profile } = user;
+    const { dmc_profile } = updatedUser;
     const body = JSON.stringify({
       data,
+      userId: user._id,
     });
+
     if (dmc_profile)
       dmcProfileService.updateDmcProfile({ token, body, dmc_profile });
-    const responseData = dmcProfileService.getDmcProfile({
-      dmc_profile,
-      token,
-    });
-
+    else {
+      const userResponse = dmcProfileService.createDmcProfile({
+        token,
+        body,
+        user,
+        setUpdatedUser,
+      });
+      setUpdatedUser(userResponse);
+    }
+    // updateUser(token);
     handleClose();
   }
-
+  // const dmcData = dmcProfileService.getDmcProfile({
+  //   dmc_profile: "60cb428f8c46f6d8e7546d53",
+  //   token,
+  // });
+  // console.log({ dmcData });
   return (
     <div>
       <Dialog

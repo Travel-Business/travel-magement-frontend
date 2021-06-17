@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -81,6 +81,9 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
     },
   },
+  welcomeUserContainer: {
+    margin: "15px 15px 5px 0px",
+  },
   sectionMobile: {
     display: "flex",
     [theme.breakpoints.up("md")]: {
@@ -92,6 +95,15 @@ const useStyles = makeStyles((theme) => ({
 export default function PrimarySearchAppBar({ query, updateQuery }) {
   const classes = useStyles();
   const { user, setUser, isAuthenticated } = useContext(AppContext);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const { username } = user;
+      setUsername(username);
+    }
+  }, [user]);
+
+  const [username, setUsername] = useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const router = useRouter();
@@ -225,6 +237,9 @@ export default function PrimarySearchAppBar({ query, updateQuery }) {
           <div className={classes.grow} />
           {isAuthenticated ? (
             <div className={classes.sectionDesktop}>
+              <div className={classes.welcomeUserContainer}>
+                {"Welcome " + username}
+              </div>
               <IconButton aria-label="show 4 new mails" color="inherit">
                 <Badge badgeContent={4} color="secondary">
                   <MailIcon />

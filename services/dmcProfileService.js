@@ -24,16 +24,19 @@ const dmcProfileService = {
     );
     return response;
   },
-  createDmcVerificationForm: async (userToken, body) => {
+  createDmcProfile: async ({ token, body, user }) => {
+    console.log({ body });
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/dmc-profiles`,
       {
         method: "POST",
-        headers: userToken && { Authorization: `Bearer ${userToken}` },
+        headers: token && { Authorization: `Bearer ${token}` },
         body,
       }
     );
-    return response;
+    const data = response.json();
+    console.log("test 37", { data });
+    return data;
   },
 };
 
