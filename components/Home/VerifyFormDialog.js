@@ -41,7 +41,10 @@ import {
 } from "./common";
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    position: "relative",
+    position: "fixed",
+  },
+  introTextContainer: {
+    margin: "100px 0px 0px 0px",
   },
   introTitle: {
     padding: "20px 20px 10px 20px",
@@ -180,7 +183,6 @@ export default function VerifyFormDialog({ open, handleClose }) {
         const updated = await res.json();
         setUpdatedUser(updated);
         setUser(user);
-        console.log("inside", { updatedUser });
       });
     }
     updateUser(token);
@@ -193,9 +195,14 @@ export default function VerifyFormDialog({ open, handleClose }) {
       userId: user._id,
     });
 
-    if (dmc_profile)
-      dmcProfileService.updateDmcProfile({ token, body, dmc_profile });
-    else {
+    if (dmc_profile) {
+      const response = dmcProfileService.updateDmcProfile({
+        token,
+        body,
+        dmc_profile,
+      });
+      response.then((res) => updateData(res));
+    } else {
       const userResponse = dmcProfileService.createDmcProfile({
         token,
         body,
@@ -204,14 +211,9 @@ export default function VerifyFormDialog({ open, handleClose }) {
       });
       setUpdatedUser(userResponse);
     }
-    // updateUser(token);
     handleClose();
   }
-  // const dmcData = dmcProfileService.getDmcProfile({
-  //   dmc_profile: "60cb428f8c46f6d8e7546d53",
-  //   token,
-  // });
-  // console.log({ dmcData });
+
   return (
     <div>
       <Dialog
@@ -238,11 +240,14 @@ export default function VerifyFormDialog({ open, handleClose }) {
             </Button>
           </Toolbar>
         </AppBar>
-        <IntroTextSection classes={classes} />
+        <div className={classes.introTextContainer}>
+          <IntroTextSection classes={classes} />
+        </div>
         <ListItemGenerator
           items={BASIC_QUESTIONS}
           onChange={onChange}
           classes={classes}
+          data={data}
         />
         <DropDownGenerator
           labelText={"Where in the world do you work and operate? "}

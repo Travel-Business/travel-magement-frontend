@@ -291,12 +291,13 @@ export const STUDY_FIELDS = {
   other: "Other",
 };
 
-export function ListItemGenerator({ onChange, classes, items }) {
+export function ListItemGenerator({ onChange, classes, items, data }) {
   const FinalList = items.map((item, index) => {
     return (
       <Grid key={index} item md={3} xs={3}>
         <ListItem>
           <TextField
+            value={data[item.name] ? data[item.name] : ""}
             id={item.name}
             label={item.label}
             type={item.type}

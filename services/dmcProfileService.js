@@ -22,10 +22,10 @@ const dmcProfileService = {
         body,
       }
     );
-    return response;
+    const data = await response.json();
+    return data;
   },
   createDmcProfile: async ({ token, body, user }) => {
-    console.log({ body });
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/dmc-profiles`,
       {
@@ -35,7 +35,6 @@ const dmcProfileService = {
       }
     );
     const data = response.json();
-    console.log("test 37", { data });
     return data;
   },
 };
